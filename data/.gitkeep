@@ -1,0 +1,2 @@
+# 此目錄用於存放範例 CSV 資料 (例如 sample_vocab.csv)
+# 本機產生的 .db / .sqlite3 檔案已被 .gitignore 排除，不會提交至 GitHub
