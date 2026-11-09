@@ -92,6 +92,10 @@
 
 ## 🤝 GitHub 團隊協作指南
 
+> 📄 **完整 Step-by-Step 操作教學（含首次下載、日常 `pull`、存檔 `commit`、上傳 `push`、開分支 `branch` 與合併 `merge` 規定）請直接參閱：[GitHub協作指南.md](./GitHub協作指南.md)**
+>
+> 🔗 **專案儲存庫網址**：`https://github.com/jackwang941214-art/vocab-review.git`
+
 為了讓 5 位組員能順暢並行開發、避免程式碼衝突與資料庫覆蓋，請遵循以下 Git / GitHub 協作規範：
 
 ### 1. 事前準備与 `.gitignore` 設定
