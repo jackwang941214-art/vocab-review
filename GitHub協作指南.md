@@ -37,6 +37,7 @@
 1. **禁止直接在 `main` 分支上寫程式或直接 `push` 到 `main`**：寫任何東西前，一定要切到自己的分支（Branch）。
 2. **每次動工前，一定要先 `pull` 最新進度**：確保你拿到隊友最新寫好的程式碼。
 3. **不要上傳個人的 `.db` / `.sqlite3` 資料庫檔與 `.venv` 資料夾**：`.gitignore` 已經幫大家自動排除，請勿手動強制上傳。
+4. **在根目錄資料夾開啟 `Git Bash`以輸入指令**：對根目錄資料夾點右鍵（例如：C:\Projects\期末專題，對著名為期末專題的資料夾），選擇底部「顯示其他選項」，選擇`Open Git Bash Here`；所有的git指令都可以在這裡執行，但沒辦法`ctrl+C`和`ctrl+V`，要用右鍵複製貼上。
 
 ---
 
@@ -158,13 +159,59 @@ git add .
 git commit -m "類型(模組): 簡短說明這次改了什麼"
 ```
 
-#### 📌 Commit 訊息格式規定
-請在雙引號內清楚標示你改了哪個部分：
-- `git commit -m "feat(db): 建立 notes 與 cards SQLite 資料表"`
-- `git commit -m "feat(service): 新增答案嚴格與寬鬆比對函式"`
-- `git commit -m "feat(cli): 完成單字新增與搜尋指令"`
-- `git commit -m "feat(gui): 新增 Tkinter 主視窗與卡組列表"`
-- `git commit -m "fix(service): 修正全形空白未被清除的問題"`
+#### 📌 Commit 訊息格式規定（採用業界標準 Conventional Commits）
+
+請統一使用以下公式撰寫 Commit 訊息（**注意冒號 `:` 後面要有一個空白**）：
+
+```text
+<類型 type>(<範圍 scope>): <簡短說明 subject>
+```
+
+##### 1. `<類型 type>` 必填：這次修改屬於哪一種性質？
+
+| 類型 (Type) | 什麼時候用？ | 本專題實際範例 |
+| :--- | :--- | :--- |
+| **`feat`** | **新增或修改功能**（最常用） | `feat(cli): 新增單字屬性編輯指令` |
+| **`fix`** | **修補 Bug / 錯誤** | `fix(service): 修正全形空白未被寬鬆比對清除的問題` |
+| **`docs`** | **僅修改文件或註解**（不動程式碼） | `docs(readme): 更新安裝步驟與分工表` |
+| **`style`** | **排版格式調整**（縮排、空行，不影響邏輯） | `style(gui): 統一視窗元件變數命名與排版` |
+| **`refactor`** | **重構程式碼**（不加功能也不修 Bug，純整理結構） | `refactor(db): 將 SQLite 連線改寫為共用函式` |
+| **`test`** | **新增或修改測試資料 / 測試程式** | `test(csv): 新增日文第 3 課範例單字 CSV 檔` |
+| **`chore`** | **專案設定、套件或雜項維護** | `chore: 更新 requirements.txt 與 .gitignore` |
+| **`revert`** | **復原（退回）先前的某次 Commit** | `revert: 退回有問題的卡組刪除邏輯` |
+
+##### 2. `<範圍 scope>` 選填但強烈建議加上：你改了哪個資料夾/模組？
+請直接從我們專題的 5 個部位挑一個填進括號裡：
+- **`(db)`**：資料庫相關（`src/db/`）
+- **`(service)`**：共用邏輯、FSRS 排程、答案比對（`src/services/`）
+- **`(cli)`**：終端機介面（`src/cli/`）
+- **`(gui)`**：Tkinter 視窗與預覽介面（`src/gui/`）
+- **`(csv)`**：CSV 匯入匯出與範例資料（`data/`）
+
+##### 3. `<簡短說明 subject>` 必填：一句話講清楚做了什麼及為什麼
+- 控制在 **50 字以內**，結尾不加句號。
+- 清楚寫出**改了什麼功能**或**解決什麼問題**。
+
+---
+
+#### 💡 寫好 Commit 的黃金守則（好 vs 壞對照表）
+
+1. **一事一 Commit（不要大鍋炒）**：
+   - **原則**：寫完一個小功能就存一次檔；修好一個 Bug 就存一次檔。
+   - **為什麼？** 如果你把「修 CSV 讀檔 Bug」跟「做 GUI 新按鈕」包在同一個 Commit，萬一 GUI 按鈕寫壞想退回上一步，連修好的 CSV Bug 也會一起被退掉！
+2. **禁止無意義的訊息（讓三天後的自己與隊友看得懂）**：
+
+| ❌ NG 寫法（千萬別這樣寫，隊友看不懂） | ✅ 正確寫法（一眼看出改了哪裡、做了什麼） |
+| :--- | :--- |
+| `git commit -m "update"` | `git commit -m "feat(db): 建立 notes 與 cards 資料表"` |
+| `git commit -m "fix bug"` | `git commit -m "fix(service): 修正答錯時未提示選擇忘記的問題"` |
+| `git commit -m "123"` / `"進度更新"` | `git commit -m "feat(gui): 完成 Markdown 轉 HTML 瀏覽器預覽"` |
+
+3. **進階補充（當你改了會影響別人的共用設定時）**：
+   如果這次修改比較複雜，或者改了資料庫欄位/共用函式名稱（**Breaking Change**），想多寫幾行解釋「為什麼要這樣改（Why）」，或是要關聯 GitHub 上的任務編號（Issue），可以用兩個 `-m`（第二個 `-m` 會自動空一行變成內文）：
+   ```bash
+   git commit -m "feat(db)!: 將卡片到期日欄位由字串改為 timestamp" -m "原因：配合 Py-FSRS 回傳格式，避免時區轉換錯誤。Closes #5"
+   ```
 
 ---
 
